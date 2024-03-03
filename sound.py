@@ -1,0 +1,87 @@
+import ipywidgets as widgets
+from IPython.display import display
+from threading import Thread
+import pyaudio
+import wave
+
+# record_button = widgets.Button(
+#     description = "Record",
+#     disabled = False,
+#     button_style ="success", 
+#     icon = "microphone"
+# )
+
+# stop_button = widgets.Button(
+#     description = "Stop",
+#     disabled = False,
+#     button_style = "warning",
+#     icon = "stop" 
+# )
+
+# output = widgets.Output()
+# def start_recording(data):
+#     messages.put(True) 
+
+#     with output:
+#         display("Starting...")
+#         record = Thread(target = record_microphone)
+#         record.start()
+
+# def stop_recording(data):
+#     with output:
+#         message.get()
+#         display("Stopped.")
+
+# record_button.on_click(start_recording)
+# stop_button.on_click(stop_recording)
+
+# display(record_button, stop_button, output)
+
+CHANNELS = 1
+FRAME_RATE = 16000
+RECORD_SECONDS = 20
+AUDIO_FORMAT = pyaudio.paInt16
+SAMPLE_SIZE = 2
+WAVE_OUTPUT_FILENAME = "record.wav"
+
+def record_microphone(chunk = 1024):
+    CHUNK = 1024
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 6
+    RATE = 44100
+    RECORD_SECONDS = 20
+    WAVE_OUTPUT_FILENAME = "voice.wav"
+
+    p = pyaudio.PyAudio()
+
+    stream = p.open(format=FORMAT,
+                channels=CHANNELS,
+                rate=RATE,
+                input=True,
+                frames_per_buffer=CHUNK)
+
+    print("* recording")
+
+    frames = []
+
+    for i in range(0, int(RATE/CHUNK * RECORD_SECONDS)):
+        data = stream.read(CHUNK)
+        frames.append(data) 
+    print(" done recording")
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+    wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+    wf.setnchannels(CHANNELS)
+    wf.setsampwidth(p.get_sample_size(FORMAT))
+    wf.setframerate(RATE)
+    wf.writeframes(b''.join(frames))
+    wf.close
+
+if __name__ == "__main__":
+    # record_microphone()
+    p = pyaudio.PyAudio()
+    for i in range(p.get_device_count()):
+        print(p.get_device_info_by_index(i))
+
+    p.terminate()
