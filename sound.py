@@ -37,7 +37,7 @@ import wave
 
 # display(record_button, stop_button, output)
 
-CHANNELS = 1
+CHANNELS = 3
 FRAME_RATE = 16000
 RECORD_SECONDS = 20
 AUDIO_FORMAT = pyaudio.paInt16
@@ -79,9 +79,10 @@ def record_microphone(chunk = 1024):
     wf.close
 
 if __name__ == "__main__":
-    # record_microphone()
-    p = pyaudio.PyAudio()
-    for i in range(p.get_device_count()):
-        print(p.get_device_info_by_index(i))
+    record_microphone()
+    # p = pyaudio.PyAudio()
+    # p.get_device_count()
+    # for i in range(p.get_device_count()):
+    #     print(p.get_device_info_by_index(i))
 
-    p.terminate()
+    # p.terminate()
