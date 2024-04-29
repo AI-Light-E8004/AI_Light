@@ -4,40 +4,7 @@ from threading import Thread
 import pyaudio
 import wave
 
-# record_button = widgets.Button(
-#     description = "Record",
-#     disabled = False,
-#     button_style ="success", 
-#     icon = "microphone"
-# )
-
-# stop_button = widgets.Button(
-#     description = "Stop",
-#     disabled = False,
-#     button_style = "warning",
-#     icon = "stop" 
-# )
-
-# output = widgets.Output()
-# def start_recording(data):
-#     messages.put(True) 
-
-#     with output:
-#         display("Starting...")
-#         record = Thread(target = record_microphone)
-#         record.start()
-
-# def stop_recording(data):
-#     with output:
-#         message.get()
-#         display("Stopped.")
-
-# record_button.on_click(start_recording)
-# stop_button.on_click(stop_recording)
-
-# display(record_button, stop_button, output)
-
-CHANNELS = 3
+CHANNELS = 2
 FRAME_RATE = 16000
 RECORD_SECONDS = 20
 AUDIO_FORMAT = pyaudio.paInt16
@@ -47,9 +14,9 @@ WAVE_OUTPUT_FILENAME = "record.wav"
 def record_microphone(chunk = 1024):
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
-    CHANNELS = 6
+    CHANNELS = 2
     RATE = 44100
-    RECORD_SECONDS = 20
+    RECORD_SECONDS = 5
     WAVE_OUTPUT_FILENAME = "voice.wav"
 
     p = pyaudio.PyAudio()
@@ -77,6 +44,7 @@ def record_microphone(chunk = 1024):
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close
+    return frames
 
 if __name__ == "__main__":
     record_microphone()
