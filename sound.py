@@ -46,8 +46,8 @@ def record_microphone(chunk = 1024):
     wf.close
     return frames
 
-if __name__ == "__main__":
-    record_microphone()
+# if __name__ == "__main__":
+    # record_microphone()
     # p = pyaudio.PyAudio()
     # p.get_device_count()
     # for i in range(p.get_device_count()):
