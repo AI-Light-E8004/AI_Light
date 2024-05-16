@@ -52,10 +52,7 @@ if __name__ == "__main__":
     # # capture sound from microphone 
     
 
-    # #placing file into the server 
-    # ssh = createSSHClient(host,22,username,password)
-    # scp = SCPClient(ssh.get_transport())
-    # scp.put(textname,destination_directory)
+
 
     # Load image and convert to a list of pixels 
     image = cv2.imread('testimage4.jpeg')
@@ -77,7 +74,8 @@ if __name__ == "__main__":
     print(color_string)
     time.sleep(1)
     while True:
-        ser.write (color_string.encode())
+        # write the appropriate color to the NEO pixel 
+        # ser.write (color_string.encode())
         line = ser.readline().decode('utf-8').rstrip()
         if line == '1':
             print("prepare to record")
@@ -85,3 +83,7 @@ if __name__ == "__main__":
             my_sound = sound.record_microphone()
             my_text = voice_recognition.transcribe_audio_path(pathname)
             print(my_text)
+                # #placing file into the server 
+            ssh = createSSHClient(host,22,username,password)
+            scp = SCPClient(ssh.get_transport())
+            scp.put(textname,destination_directory)
