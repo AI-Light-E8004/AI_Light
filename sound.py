@@ -4,13 +4,6 @@ from threading import Thread
 import pyaudio
 import wave
 
-CHANNELS = 2
-FRAME_RATE = 16000
-RECORD_SECONDS = 20
-AUDIO_FORMAT = pyaudio.paInt16
-SAMPLE_SIZE = 2
-WAVE_OUTPUT_FILENAME = "record.wav"
-
 def record_microphone(chunk = 1024):
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
@@ -31,7 +24,8 @@ def record_microphone(chunk = 1024):
                 channels=CHANNELS,
                 rate=RATE,
                 input=True,
-                frames_per_buffer=CHUNK)
+                frames_per_buffer=CHUNK,
+                input_device_index=2)
 
     print("* recording")
 
