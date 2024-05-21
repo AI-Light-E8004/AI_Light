@@ -117,21 +117,32 @@ void loop() {
   }
 
     for (int i = 0; i <5; i++) {
-      pixels.setPixelColor(i, pixels.Color(r1, g1, b1));  
+      pixels.setPixelColor(i, pixels.Color(r1, g1, b1));
+      delay(20);
+      pixels.show();
     }
     for (int i = 5; i <10; i++) {
       pixels.setPixelColor(i, pixels.Color(r2, g2, b2));
+      delay(20);
+      pixels.show();
     }
     for (int i = 10; i <15; i++) {
       pixels.setPixelColor(i, pixels.Color(r3, g3, b3));  
+      delay(20);
+      pixels.show();
     }
     for (int i = 15; i <20; i++) {
       pixels.setPixelColor(i, pixels.Color(r4, g4, b4));
+      delay(20);
+      pixels.show();
     }
     for (int i = 20; i <25; i++) {
       pixels.setPixelColor(i, pixels.Color(r5, g5, b5));
+      delay(20);
+      pixels.show();
     }
-    pixels.show();
+    delay(200);
+    pixels.clear();
 
     //printing function to know if the arduino get the correct rgb value 
 //    Serial.print(part01);

@@ -24,8 +24,7 @@ def record_microphone(chunk = 1024):
                 channels=CHANNELS,
                 rate=RATE,
                 input=True,
-                frames_per_buffer=CHUNK,
-                input_device_index=2)
+                frames_per_buffer=CHUNK)
 
     print("* recording")
 

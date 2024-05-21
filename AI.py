@@ -19,6 +19,7 @@ password = "aZ9r31Rdvc1W"
 
 COLOR_WHITE = "50 50 50; 50 50 50; 50 50 50; 50 50 50; 50 50 50"
 COLOR_RED = "50 0 0; 50 0 0; 50 0 0; 50 0 0 ; 50 0 0"
+COLOR_OFF = "0 0 0; 0 0 0; 0 0 0; 0 0 0; 0 0 0"
 
 def visualize_colors(cluster, centroids):
     # Get the number of different clusters, create histogram, and normalize
@@ -101,7 +102,8 @@ if __name__ == "__main__":
                 play_video("rickroll.mp4")
             ser.write(COLOR_WHITE.encode())
             if my_text == "-4":
-                print("you are my heart")
+                play_video("For the Future.mp4")
+            ser.write (COLOR_OFF.encode())
                 # #placing file into the server 
             # ssh = createSSHClient(host,22,username,password)
             # scp = SCPClient(ssh.get_transport())
