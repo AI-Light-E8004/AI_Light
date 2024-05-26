@@ -84,7 +84,7 @@ if __name__ == "__main__":
     time.sleep(1)
     while True:
         # write the appropriate color to the NEO pixel 
-        ser.write (COLOR_WHITE.encode())
+        ser.write (COLOR_OFF.encode())
         line = ser.readline().decode('utf-8').rstrip()
         if line == '1':
             print("prepare to record")
@@ -95,10 +95,17 @@ if __name__ == "__main__":
             time.sleep(0.01)
             ser.write (COLOR_RED.encode())
             my_sound = sound.record_microphone()
-            my_text = voice_recognition.transcribe_audio_path(pathname)
+            try:
+                my_text = voice_recognition.transcribe_audio_path(pathname)
+            except:
+                print("an error has occured")
+                my_text = "cannot detect anysound"
             print(my_text)
             ser.write (COLOR_WHITE.encode())
             if my_text == "Never Gonna Give You Up":
+                play_video("rickroll.mp4")
+            ser.write(COLOR_WHITE.encode())
+            if my_text == "Rick Roll":
                 play_video("rickroll.mp4")
             ser.write(COLOR_WHITE.encode())
             if my_text == "-4":

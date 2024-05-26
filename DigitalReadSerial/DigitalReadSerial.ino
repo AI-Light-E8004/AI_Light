@@ -3,7 +3,7 @@
   #include <avr/power.h>
 #endif
 #define NEOPIXEL_PIN 13
-#define NUMPIXELS 30
+#define NUMPIXELS 40
 
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 20 
@@ -116,27 +116,27 @@ void loop() {
     b5 = part05_b.toInt();
   }
 
-    for (int i = 0; i <5; i++) {
+    for (int i = 0; i <8; i++) {
       pixels.setPixelColor(i, pixels.Color(r1, g1, b1));
       delay(20);
       pixels.show();
     }
-    for (int i = 5; i <10; i++) {
+    for (int i = 8; i <16; i++) {
       pixels.setPixelColor(i, pixels.Color(r2, g2, b2));
       delay(20);
       pixels.show();
     }
-    for (int i = 10; i <15; i++) {
+    for (int i = 16; i <24; i++) {
       pixels.setPixelColor(i, pixels.Color(r3, g3, b3));  
       delay(20);
       pixels.show();
     }
-    for (int i = 15; i <20; i++) {
+    for (int i = 24; i <32; i++) {
       pixels.setPixelColor(i, pixels.Color(r4, g4, b4));
       delay(20);
       pixels.show();
     }
-    for (int i = 20; i <25; i++) {
+    for (int i = 32; i <40; i++) {
       pixels.setPixelColor(i, pixels.Color(r5, g5, b5));
       delay(20);
       pixels.show();

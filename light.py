@@ -14,13 +14,15 @@ import vlc
 pathname = "voice.wav"
 textname = "text.txt"
 destination_directory = "/scratch/work/buit8/outputText"
-imageName = "frame_0.jpeg"
+
+imageName = "frame_pirate.jpeg"
+VIDEOPATH = 'video_pirate.mp4'
 
 host = "triton.aalto.fi"
 username = "buit8"
 password = "aZ9r31Rdvc1W"
 
-VIDEOPATH = 'video.mp4'
+
 VIDEOLENGTH = 30
 COLOR_OFF = "0 0 0; 0 0 0; 0 0 0; 0 0 0; 0 0 0"
 def visualize_colors(cluster, centroids):
