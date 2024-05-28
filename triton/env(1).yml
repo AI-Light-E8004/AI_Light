@@ -1,0 +1,24 @@
+name: text-image-env
+channels:
+
+  
+  - pytorch
+  - nvidia
+  
+  
+dependencies:
+  - python=3.10
+  - pip
+  - pytorch 
+  - torchvision 
+  - torchaudio 
+  - pytorch-cuda=12.1
+  - pip:
+    - transformers
+    - diffusers
+    - accelerate
+    - numpy
+    - imageio
+    - imageio[ffmpeg]
+    - imageio[pyav]
+    - SpeechRecognition
