@@ -14,8 +14,8 @@ textname = "text.txt"
 destination_directory = "/scratch/work/buit8/outputText"
 
 host = "triton.aalto.fi"
-username = "buit8"
-password = "aZ9r31Rdvc1W"
+username = "xxx"
+password = "xxx"
 
 COLOR_WHITE = "50 50 50; 50 50 50; 50 50 50; 50 50 50; 50 50 50"
 COLOR_RED = "50 0 0; 50 0 0; 50 0 0; 50 0 0 ; 50 0 0"
