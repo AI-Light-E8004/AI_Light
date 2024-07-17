@@ -44,14 +44,14 @@ def createSSHClient(server, port, user, password):
     return client
 
 if __name__ == "__main__":
-    ser = serial.Serial(
-    port='/dev/ttyACM0',\
-    baudrate=115200,\
-    parity=serial.PARITY_NONE,\
-    stopbits=serial.STOPBITS_ONE,\
-    bytesize=serial.EIGHTBITS,\
-        timeout=10)
-    ser.reset_input_buffer()
+    # ser = serial.Serial(
+    # port='/dev/ttyACM0',\
+    # baudrate=115200,\
+    # parity=serial.PARITY_NONE,\
+    # stopbits=serial.STOPBITS_ONE,\
+    # bytesize=serial.EIGHTBITS,\
+    #     timeout=10)
+    # ser.reset_input_buffer()
     # # capture sound from microphone 
     
 
@@ -84,33 +84,33 @@ if __name__ == "__main__":
     time.sleep(1)
     while True:
         # write the appropriate color to the NEO pixel 
-        ser.write (COLOR_OFF.encode())
-        line = ser.readline().decode('utf-8').rstrip()
-        if line == '1':
-            print("prepare to record")
-            time.sleep(1.5)
-            ser.write (COLOR_RED.encode())
-            time.sleep(0.01)
-            ser.write (COLOR_RED.encode())
-            time.sleep(0.01)
-            ser.write (COLOR_RED.encode())
-            my_sound = sound.record_microphone()
+        # ser.write (COLOR_OFF.encode())
+        # line = ser.readline().decode('utf-8').rstrip()
+        # if line == '1':
+        #     print("prepare to record")
+        #     time.sleep(1.5)
+        #     ser.write (COLOR_RED.encode())
+        #     time.sleep(0.01)
+        #     ser.write (COLOR_RED.encode())
+        #     time.sleep(0.01)
+        #     ser.write (COLOR_RED.encode())
+        #     my_sound = sound.record_microphone()
             try:
                 my_text = voice_recognition.transcribe_audio_path(pathname)
             except:
                 print("an error has occured")
                 my_text = "cannot detect anysound"
             print(my_text)
-            ser.write (COLOR_WHITE.encode())
+            # ser.write (COLOR_WHITE.encode())
             if my_text == "Never Gonna Give You Up":
                 play_video("rickroll.mp4")
-            ser.write(COLOR_WHITE.encode())
+            # ser.write(COLOR_WHITE.encode())
             if my_text == "Rick Roll":
                 play_video("rickroll.mp4")
-            ser.write(COLOR_WHITE.encode())
+            # ser.write(COLOR_WHITE.encode())
             if my_text == "-4":
                 play_video("For the Future.mp4")
-            ser.write (COLOR_OFF.encode())
+            # ser.write (COLOR_OFF.encode())
                 # #placing file into the server 
             # ssh = createSSHClient(host,22,username,password)
             # scp = SCPClient(ssh.get_transport())
