@@ -89,7 +89,7 @@ def play_video(file_path, loop_count):
   start_pulseaudio()
   print("Playing a video...")
     
-    subprocess.run(['mpv', '--loop=' + str(loop_count) '--zoom 3.0', file_path])
+    subprocess.run(['mpv', '--loop=' + str(loop_count), '--fs', file_path])
   print("Finished playing the video.")
 
 
