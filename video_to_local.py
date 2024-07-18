@@ -2,27 +2,33 @@ import paramiko
 import time
 import subprocess
 import os
+import vlc
 from scp import SCPClient
 
 # Remote server details
 username = 'root'    
-ip = '127.0.0.1'                 # <-- ADD IP-ADDRESS OF REMOTE HOST
-port = 22                        # <-- ADD PORT OF REMOTE HOST
-key_path = '~/.ssh/id_ed25519'   # path to private ssh ed25519 key
+ip = '91.199.227.82'                 # <-- ADD IP-ADDRESS OF REMOTE HOST
+port = 12308                            # <-- ADD PORT OF REMOTE HOST
+key_path = '/home/aiproject/ssh/id_ed25519'   # path to private ssh ed25519 key
 
 # Paths to correct folders
 remote_file_path = '/workspace/Open-Sora/samples/samples/sample_0000.mp4'         # Output file of the AI model
-local_file_path = '/aiproject/output_samples/'                                    # Destination file path where video is stored on local for playback
-backup_folder_path = '/aiproject/backup_samples'                                  # Destination file path where every output is stored
+local_file_path = '/home/aiproject/Project/sample_outputs/'                                    # Destination file path where video is stored on local for playback
+backup_folder_path = '/home/aiproject/Project/backup_outputs'       # Destination file path where every output is stored
+video_file_path = '/home/aiproject/Project/sample_outputs/sample_0000.mp4'                                  
 
 # Define loop count for video playback
-loop_count = 7
+loop_count = 3
 
 # FUNCTION1: Establish an SSH connection to the remote server.
 def ssh_client(username, ip, port, key_path):
   client = paramiko.SSHClient()
   client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-  client.connect(username, ip, port, key_filename=key_path)
+  try:
+    client.connect(ip, port, username=username, key_filename=key_path)
+    print("SSH Connection successful.")
+  except Exception as e:
+      print(f"SSH connection failed: {e}")
   return client
 
 # FUNCTION2: Get the last modification time of the file on the remote server.
@@ -41,6 +47,7 @@ def get_update_time(client, path):
 def file_transfer(client, remote_path, local_path):
   with SCPClient(client.get_transport()) as scp:
     scp.get(remote_path, local_path)
+    print("File downloaded successfully.")
 
 # FUNCTION4: Generate the next filename with a running number in the specified directory.
 def get_next_filename(path, prefix, extension):
@@ -52,20 +59,49 @@ def get_next_filename(path, prefix, extension):
     last_number = int(last_file[len(prefix):-len(extension)])
     next_number = last_number + 1
     return f"{prefix}{next_number:04d}{extension}"
+    
+def start_pulseaudio():
+  try:
+    subprocess.run(['pulseaudio', '--check'], check=True)
+    print("PulseAudio is already running.")
+  except subprocess.CalledProcessError:
+    try:
+      subprocess.run(['pulseaudio', '--start'], check=True)
+      print("PulseAudio started successfully.")
+    except subprocess.CalledProcessError as e:
+      print(f"Failed to start PulseAudio: {e}") 
+      
+def start_dbus():
+  try:
+    subprocess.run(['pgrep', 'dbus-daemon'], check=True)
+    print("D-Bus is already running.")
+  except subprocess.CalledProcessError:
+    try:
+      subprocess.run(['dbus-launch'], check=True)
+      print("D-Bus started successfully.")
+    except subprocess.CalledProcessError as e:
+      print(f"Failed to start PulseAudio: {e}")
+
 
 # FUNCTION5: Play the video file using VLC, looping it the specified number of times.
 def play_video(file_path, loop_count):
-    for _ in range(loop_count):
-        subprocess.run(['vlc', '--play-and-exit', file_path])
+  start_dbus()
+  start_pulseaudio()
+  print("Playing a video...")
+    
+    subprocess.run(['mpv', '--loop=' + str(loop_count) '--zoom 3.0', file_path])
+  print("Finished playing the video.")
 
 
 # Establish SSH client connection
 client = ssh_client(username, ip, port, key_path)
 
+
 # Initial modification time of the file
 prev_update_time = get_update_time(client, remote_file_path)
 
 while True:
+  print("Polling the server for file updates...")
   curr_update_time = get_update_time(client, remote_file_path)
   
   if curr_update_time != prev_update_time:
@@ -75,10 +111,11 @@ while True:
 
     next_backup_filename = get_next_filename(backup_folder_path, 'sample_', '.mp4')         # Generate the next backup filename with a running number
     backup_full_path = os.path.join(backup_folder_path, next_backup_filename)
+    print(f"Backing up file from {local_full_path} to {backup_full_path}")
     
-    os.rename(local_full_path, backup_full_path)                                            # Move the transferred file to the backup folder with the new name
-    os.rename(backup_full_path, local_full_path)                                            # Move the file back to the local folder with the original name
-        
+    subprocess.run(['cp', local_full_path, backup_full_path], check=True)
+    print(f"Video file copied to backup: {backup_full_path}")
+    
     play_video(local_full_path, loop_count)                                                 # Play the file using VLC, loop it loop_count times
 
     prev_update_time = curr_update_time                                                     # Update the previous update time to the current update time
