@@ -59,7 +59,8 @@ def get_next_filename(path, prefix, extension):
     last_number = int(last_file[len(prefix):-len(extension)])
     next_number = last_number + 1
     return f"{prefix}{next_number:04d}{extension}"
-    
+
+#FUNCTION5:
 def start_pulseaudio():
   try:
     subprocess.run(['pulseaudio', '--check'], check=True)
@@ -70,7 +71,8 @@ def start_pulseaudio():
       print("PulseAudio started successfully.")
     except subprocess.CalledProcessError as e:
       print(f"Failed to start PulseAudio: {e}") 
-      
+
+#FUNCTION6:    
 def start_dbus():
   try:
     subprocess.run(['pgrep', 'dbus-daemon'], check=True)
@@ -83,13 +85,14 @@ def start_dbus():
       print(f"Failed to start PulseAudio: {e}")
 
 
-# FUNCTION5: Play the video file using VLC, looping it the specified number of times.
+# FUNCTION7: Play the video file using MPV, looping it the specified number of times.
 def play_video(file_path, loop_count):
   start_dbus()
   start_pulseaudio()
   print("Playing a video...")
-    
-    subprocess.run(['mpv', '--loop=' + str(loop_count), '--fs', file_path])
+
+  time.sleep(2)                 #Adding a delay helps to ensure the file is fully written and ready to be played
+  subprocess.run(['mpv', '--loop=' + str(loop_count), '--fs', file_path])
   print("Finished playing the video.")
 
 
