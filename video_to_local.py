@@ -19,6 +19,7 @@ video_file_path = '/home/aiproject/Project/sample_outputs/sample_0000.mp4'
 
 # Define loop count for video playback
 loop_count = 3
+max_retries = 5
 
 # FUNCTION1: Establish an SSH connection to the remote server.
 def ssh_client(username, ip, port, key_path):
@@ -60,50 +61,52 @@ def get_next_filename(path, prefix, extension):
     next_number = last_number + 1
     return f"{prefix}{next_number:04d}{extension}"
     
-def start_pulseaudio():
-  try:
-    subprocess.run(['pulseaudio', '--check'], check=True)
-    print("PulseAudio is already running.")
-  except subprocess.CalledProcessError:
-    try:
-      subprocess.run(['pulseaudio', '--start'], check=True)
-      print("PulseAudio started successfully.")
-    except subprocess.CalledProcessError as e:
-      print(f"Failed to start PulseAudio: {e}") 
+# def start_pulseaudio():
+#  try:
+#    subprocess.run(['pulseaudio', '--check'], check=True)
+#    print("PulseAudio is already running.")
+#  except subprocess.CalledProcessError:
+#    try:
+#      subprocess.run(['pulseaudio', '--start'], check=True)
+#      print("PulseAudio started successfully.")
+#    except subprocess.CalledProcessError as e:
+#      print(f"Failed to start PulseAudio: {e}") 
       
-def start_dbus():
-  try:
-    subprocess.run(['pgrep', 'dbus-daemon'], check=True)
-    print("D-Bus is already running.")
-  except subprocess.CalledProcessError:
-    try:
-      subprocess.run(['dbus-launch'], check=True)
-      print("D-Bus started successfully.")
-    except subprocess.CalledProcessError as e:
-      print(f"Failed to start PulseAudio: {e}")
+# def start_dbus():
+#  try:
+#    subprocess.run(['pgrep', 'dbus-daemon'], check=True)
+#    print("D-Bus is already running.")
+#  except subprocess.CalledProcessError:
+#    try:
+#      subprocess.run(['dbus-launch'], check=True)
+#      print("D-Bus started successfully.")
+#    except subprocess.CalledProcessError as e:
+#      print(f"Failed to start PulseAudio: {e}")
 
-# FUNCTION5: Play the video file using MPV, looping it the specified number of times.
+# FUNCTION5: Verify video data using ffmpeg
+def verify_video(file_path):
+  try:
+    subprocess.run(['ffmpeg', '-v', 'error', '-i', file_path, '-f', 'null', '-'], check=True)
+    print("Video verification successful.")
+    return True
+    
+  except subprocess.CalledProcessError as e:
+    print(f"Video verification failed: {e}")
+    return False
+
+# FUNCTION6: Play the video file using MPV, looping it the specified number of times.
 def play_video(file_path, loop_count):
   start_dbus()
   start_pulseaudio()
   print("Playing a video...")
 
-  time.sleep(15)
+  time.sleep(5)
   subprocess.run(['mpv', '--loop=' + str(loop_count), '--fs', file_path], check=True)
   
   print("Finished playing the video.")
 
-
-
-
-############################# STILL PROBLEM WITH PLAYING VIDEO, FOR SOME REASON VIDEO LOSES METADATA#######################
-
-
-
-
 # Establish SSH client connection
 client = ssh_client(username, ip, port, key_path)
-
 
 # Initial modification time of the file
 prev_update_time = get_update_time(client, remote_file_path)
@@ -113,9 +116,22 @@ while True:
   curr_update_time = get_update_time(client, remote_file_path)
   
   if curr_update_time != prev_update_time:
+    retries = 0
     
-    local_full_path = os.path.join(local_file_path, os.path.basename(remote_file_path))     # Construct the full local path for the file
-    file_transfer(client, remote_file_path, local_full_path)                                # Transfer the file from the remote server to the local path
+    while retries < max_retries:
+      local_full_path = os.path.join(local_file_path, os.path.basename(remote_file_path))  # Construct the full local path for the file
+      file_transfer(client, remote_file_path, local_full_path)  # Transfer the file from the remote server to the local path
+      if verify_video(local_full_path):
+        print("Verification successful.")
+        break
+      else:
+        print("Verification failed, retrying transfer...")
+        retries += 1
+        time.sleep(2)
+        
+        if retries == max_retries:
+          print("Failed to transfer and verify the file after multiple attempts.")
+          continue
 
     next_backup_filename = get_next_filename(backup_folder_path, 'sample_', '.mp4')         # Generate the next backup filename with a running number
     backup_full_path = os.path.join(backup_folder_path, next_backup_filename)
