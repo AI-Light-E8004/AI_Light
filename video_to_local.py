@@ -7,8 +7,8 @@ from scp import SCPClient
 
 # Remote server details
 username = 'root'    
-ip = '205.196.17.50'                 # <-- ADD IP-ADDRESS OF REMOTE HOST
-port = 8875                            # <-- ADD PORT OF REMOTE HOST
+ip = '69.30.85.162'                 # <-- ADD IP-ADDRESS OF REMOTE HOST
+port = 22179                            # <-- ADD PORT OF REMOTE HOST
 key_path = '/home/aiproject/ssh/id_ed25519'   # path to private ssh ed25519 key
 
 # Paths to correct folders
@@ -43,6 +43,17 @@ def get_update_time(client, path):
     raise Exception(f"Error getting modification time: {error_msg_poll}")
 
   return int(update_time)
+
+def get_file_size(client, path):
+  stdin, stdout, stderr = client.exec_command(f'stat -c %s {path}' )
+
+  file_size = stdout.read().strip()
+  error_msg_size = stderr.read().strip()
+
+  if error_msg_size:
+    raise Exception(f"Error getting file size: {error_msg_size}")
+
+  return int(file_size)
 
 # FUNCTION3: Transfer the file from the remote server to the local machine.
 def file_transfer(client, remote_path, local_path):
@@ -96,8 +107,7 @@ def verify_video(file_path):
 
 # FUNCTION6: Play the video file using MPV, looping it the specified number of times.
 def play_video(file_path, loop_count):
-  start_dbus()
-  start_pulseaudio()
+  
   print("Playing a video...")
 
   time.sleep(5)
@@ -110,12 +120,15 @@ client = ssh_client(username, ip, port, key_path)
 
 # Initial modification time of the file
 prev_update_time = get_update_time(client, remote_file_path)
+prev_file_size = get_file_size(client, remote_file_path)
 
 while True:
   print("Polling the server for file updates...")
   curr_update_time = get_update_time(client, remote_file_path)
+  curr_file_size = get_file_size(client, remote_file_path)
   
-  if curr_update_time != prev_update_time:
+  if curr_update_time != prev_update_time and curr_file_size != prev_file_size:
+    time.sleep(5)
     retries = 0
     
     while retries < max_retries:
@@ -141,9 +154,10 @@ while True:
     print(f"Video file copied to backup: {backup_full_path}")
     
     play_video(local_full_path, loop_count)                                                 # Play the file using MPV, loop it loop_count times
-
+    
+    time.sleep(10) # Wait for 10 seconds before the next check
     prev_update_time = curr_update_time                                                     # Update the previous update time to the current update time
-    time.sleep(10)                                                                          # Wait for 10 seconds before the next check
+    prev_file_size = curr_file_size
   
   else:
     time.sleep(5)                                                                           # Wait for 5 seconds before the next check if the file hasn't been updated
