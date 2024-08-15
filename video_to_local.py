@@ -17,6 +17,9 @@ local_file_path = '/home/aiproject/Project/sample_outputs/'                     
 backup_folder_path = '/home/aiproject/Project/backup_outputs'                    # Backup destination file path where every output is stored
 video_file_path = '/home/aiproject/Project/sample_outputs/sample_0000.mp4'       # Video file to be played                                  
 
+status_file = "light_state.txt"  # State machine txt.file
+status_written = False           # Used for checking if status file has been written already
+
 # Define loop count for video playback
 loop_count = 3
 
@@ -114,6 +117,11 @@ prev_file_size = get_file_size(client, remote_file_path)
 
 
 while True:
+  if not status_written:
+    with open(status_file, 'w') as f:
+      f.write("1")
+    status_written = True
+    
   print("Polling the server for file updates...")
   curr_update_time = get_update_time(client, remote_file_path)
   curr_file_size = get_file_size(client, remote_file_path)
@@ -144,12 +152,16 @@ while True:
     
     subprocess.run(['cp', local_full_path, backup_full_path], check=True)                    # Make backup
     print(f"Video file copied to backup: {backup_full_path}")
+
+    with open(status_file, 'w') as f:
+      f.write("4")
     
     play_video(local_full_path, loop_count)                                                 # Play the file using MPV, loop it loop_count times
     
     time.sleep(10)                                                                         # Wait for 10 seconds before the next check
     prev_update_time = curr_update_time                                                     # Update the previous update time to the current update time
     prev_file_size = curr_file_size                                                        # Update the previous file size to the current file size
+    status_written = False
   
   else:
     time.sleep(5)                                                                           # Wait for 5 seconds before the next check if the file hasn't been updated
