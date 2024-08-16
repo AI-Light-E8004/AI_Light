@@ -7,6 +7,7 @@ import os
 import voice_recognition
 import paramiko
 from scp import SCPClient
+import serial
 
 pathname = "voice.wav"
 textname = "text.txt"
@@ -30,14 +31,6 @@ def send_file(client, local_path, remote_path):
     with SCPClient(client.get_transport()) as scp:
         scp.put(local_path, remote_path) 
 
-# def add_style(text):
-#     style1 = "Black on white, line sketching, fish eyes"
-#     style2 = "Sand art, sand painting, fish eyes"
-#     style3 = "Minimalism, simple sketch"
-#     style4 = "In the style of Monet, monochrome"
-#     final_text = text + "." + style1 + "\n" + text + "." + style2 + "\n" + text + "." + style3 + "\n" + text + "." + style4 + "\n" 
-#     return final_text
-
 # FUNCTION4: Generate the next filename with a running number in the specified directory.
 def get_next_filename(path, prefix, extension):
     existing_files = [f for f in os.listdir(path) if f.startswith(prefix) and f.endswith(extension)]
@@ -53,12 +46,30 @@ def get_next_filename(path, prefix, extension):
 
 
 if __name__ == "__main__":
-    my_sound = sound.record_microphone()
-    my_text = voice_recognition.transcribe_audio_path(pathname)
-    backup_name = get_next_filename(backup_folder_path, 'text', '.txt')
-    file_directory = backup_folder_path + backup_name
-    f = open(file_directory, "w")
-    f.write(my_text)
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser.reset_input_buffer()
+    
+    while True:
+        
+        if ser.in_waiting > 0:
+            line = ser.readline().decode().rstrip()
+            print(line)
+            if line[0] == '5':
+                print("sound recording command received")
+                time.sleep(1)
+                my_sound = sound.record_microphone()
+                try:   
+                    my_text = voice_recognition.transcribe_audio_path(pathname)
+                except:
+                    print("could not detect any sound")
+                backup_name = get_next_filename(backup_folder_path, 'text', '.txt')
+                file_directory = backup_folder_path + backup_name
+                f = open(file_directory, "w")
+                f.write(my_text)
 
-    client = ssh_client(username, ip, port, key_path)
-    send_file(client, local_path, remote_path) 
+            # client = ssh_client(username, ip, port, key_path)
+            # send_file(client, local_path, remote_path) 
+            time.sleep(1)
+            ser.reset_input_buffer()
+            ser.reset_output_buffer()
+

@@ -8,12 +8,12 @@ pathname = "voice.wav"
 output = "text.txt"
 def add_style(text):
     style1 = "Monochrome, high contrast, fisheye lens effect, moody, in motion"
-    style2 = "Monochrome, high contrast"
-    style3 = "black and white, lively, in motion"
-    style4 = "black and white, high contrast, rapid change, eerily"
-    style5 = "monochrome, lively, eerily, realistic"
-    final_text = text + "." + style1 + "\n" + text + "." + style2 + "\n" + text + "." + style3 + "\n" + text + "." + style4 + "\n" + text + "." +style5 + "\n" 
-    return final_text
+    # style2 = "Monochrome, high contrast"
+    # style3 = "black and white, lively, in motion"
+    # style4 = "black and white, high contrast, rapid change, eerily"
+    # style5 = "monochrome, lively, eerily, realistic"
+    # final_text = text + "." + style1 + "\n" + text + "." + style2 + "\n" + text + "." + style3 + "\n" + text + "." + style4 + "\n" + text + "." +style5 + "\n" 
+    return text
 
 def transcribe_audio_path(path): 
     with sr.AudioFile(path) as source:
