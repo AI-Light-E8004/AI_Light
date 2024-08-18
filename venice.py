@@ -20,6 +20,7 @@ key_path = '/home/tung/.ssh/id'  # path to private key
 local_path = 'text.txt'
 remote_path = '/workspace/Open-Sora/assets/texts/t2v.txt'
 backup_folder_path = '/home/tung/Desktop/Master/AI_Light/backup/'
+light_state_path = 'light_state.txt'
 
 def ssh_client(username, ip, port, key_path):
     client = paramiko.SSHClient()
@@ -48,28 +49,51 @@ def get_next_filename(path, prefix, extension):
 if __name__ == "__main__":
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     ser.reset_input_buffer()
-    
+    with open(light_state_path, 'w') as f:
+        f.write("1")
+    prev_light_state = '1\n'
+    cur_light_state = '1\n'
+    ser.write(cur_light_state.encode('utf-8'))
     while True:
-        
+        with open(light_state_path, 'r') as f:
+            cur_light_state = f.read()
+        if cur_light_state != prev_light_state:
+            ser.write(cur_light_state.encode('utf-8'))
+            print(cur_light_state)
         if ser.in_waiting > 0:
             line = ser.readline().decode().rstrip()
             print(line)
             if line[0] == '5':
                 print("sound recording command received")
                 time.sleep(1)
+                with open(light_state_path, 'w') as f:
+                    f.write("2\n")
+                with open(light_state_path, 'r') as f:
+                    cur_light_state = f.read()
+                print("current light state is: " + cur_light_state)
+                ser.write(cur_light_state.encode('utf-8'))
                 my_sound = sound.record_microphone()
+                my_text = ""
                 try:   
                     my_text = voice_recognition.transcribe_audio_path(pathname)
                 except:
                     print("could not detect any sound")
+
                 backup_name = get_next_filename(backup_folder_path, 'text', '.txt')
                 file_directory = backup_folder_path + backup_name
                 f = open(file_directory, "w")
                 f.write(my_text)
 
-            # client = ssh_client(username, ip, port, key_path)
-            # send_file(client, local_path, remote_path) 
+                with open(light_state_path, 'w') as f:
+                    f.write("3\n")
+                with open(light_state_path, 'r') as f:
+                    cur_light_state = f.read()
+                ser.write(cur_light_state.encode('utf-8'))
+
+                # client = ssh_client(username, ip, port, key_path)
+                # send_file(client, local_path, remote_path) 
             time.sleep(1)
             ser.reset_input_buffer()
             ser.reset_output_buffer()
 
+        prev_light_state = cur_light_state
