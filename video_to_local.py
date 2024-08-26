@@ -16,6 +16,7 @@ remote_file_path = '/workspace/Open-Sora/samples/samples/sample_0000.mp4'       
 local_file_path = '/home/aiproject/Project/sample_outputs/'                      # Destination file path where video is stored on local for playback
 backup_folder_path = '/home/aiproject/Project/backup_outputs'                    # Backup destination file path where every output is stored
 video_file_path = '/home/aiproject/Project/sample_outputs/sample_0000.mp4'       # Video file to be played                                  
+polling_video_path ='/home/aiproject/Project/polling_video/polling.mp4'
 
 status_file = "light_state.txt"  # State machine txt.file
 status_written = False           # Used for checking if status file has been written already
@@ -164,4 +165,5 @@ while True:
     status_written = False
   
   else:
-    time.sleep(5)                                                                           # Wait for 5 seconds before the next check if the file hasn't been updated
+  #time.sleep(5)                                                                           # Wait for 5 seconds before the next check if the file hasn't been updated
+  subprocess.run(['mpv', '--no-terminal', '--really-quiet', '--fs', polling_video_path])
