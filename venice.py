@@ -13,14 +13,15 @@ pathname = "voice.wav"
 textname = "text.txt"
 
 username = 'root'
-ip = '69.30.85.156'   #change IP address accordingly 
-port = 22049          #change port accordingly 
-key_path = '/home/tung/.ssh/id'  # path to private key 
+ip = '91.199.227.82'   #change IP address accordingly 
+port = 10427          #change port accordingly 
+key_path = '/home/tung/.ssh/id_ed25519'  # path to private key 
 
 local_path = 'text.txt'
 remote_path = '/workspace/Open-Sora/assets/texts/t2v.txt'
 backup_folder_path = '/home/tung/Desktop/Master/AI_Light/backup/'
 light_state_path = 'light_state.txt'
+generation_time = 200 # 2 minutes is 120 seconds 
 
 def ssh_client(username, ip, port, key_path):
     client = paramiko.SSHClient()
@@ -77,21 +78,31 @@ if __name__ == "__main__":
                 try:   
                     my_text = voice_recognition.transcribe_audio_path(pathname)
                 except:
+                    with open(light_state_path, 'w') as f:
+                        f.write("1\n")
+                    with open(light_state_path, 'r') as f:
+                        cur_light_state = f.read()
+                    ser.write(cur_light_state.encode('utf-8'))
                     print("could not detect any sound")
+                else:
+                
+                    backup_name = get_next_filename(backup_folder_path, 'text', '.txt')
+                    file_directory = backup_folder_path + backup_name
+                    f = open(file_directory, "w")
+                    f.write(my_text)
 
-                backup_name = get_next_filename(backup_folder_path, 'text', '.txt')
-                file_directory = backup_folder_path + backup_name
-                f = open(file_directory, "w")
-                f.write(my_text)
+                    with open(light_state_path, 'w') as f:
+                        f.write("3\n")
+                    with open(light_state_path, 'r') as f:
+                        cur_light_state = f.read()
+                    ser.write(cur_light_state.encode('utf-8'))
 
-                with open(light_state_path, 'w') as f:
-                    f.write("3\n")
-                with open(light_state_path, 'r') as f:
-                    cur_light_state = f.read()
-                ser.write(cur_light_state.encode('utf-8'))
-
-                # client = ssh_client(username, ip, port, key_path)
-                # send_file(client, local_path, remote_path) 
+                    client = ssh_client(username, ip, port, key_path)
+                    send_file(client, local_path, remote_path) 
+                    for x in range (generation_time):
+                        print(x)
+                        time.sleep(1)
+                                        
             time.sleep(1)
             ser.reset_input_buffer()
             ser.reset_output_buffer()

@@ -9,6 +9,7 @@ file_path = "/workspace/Open-Sora/assets/texts/t2v.txt"
 prev_modification_time = os.path.getmtime(file_path)
 
 while True:
+    print
     # Get the current modification time of the file
     current_modification_time = os.path.getmtime(file_path)
     
@@ -25,4 +26,4 @@ while True:
         prev_modification_time = current_modification_time
         
     # Wait for some time before checking again (e.g., every 5 seconds)
-    time.sleep(5)
+    time.sleep(2)
