@@ -9,7 +9,7 @@ def record_microphone(chunk = 1024):
     FORMAT = pyaudio.paInt16
     CHANNELS = 2
     RATE = 44100
-    RECORD_SECONDS = 5
+    RECORD_SECONDS = 10
     WAVE_OUTPUT_FILENAME = "voice.wav"
 
     p = pyaudio.PyAudio()
@@ -46,10 +46,10 @@ def record_microphone(chunk = 1024):
     return frames
 
 # if __name__ == "__main__":
-    # record_microphone()
-    # p = pyaudio.PyAudio()
-    # p.get_device_count()
-    # for i in range(p.get_device_count()):
-    #     print(p.get_device_info_by_index(i))
+#     record_microphone()
+#     p = pyaudio.PyAudio()
+#     p.get_device_count()
+#     for i in range(p.get_device_count()):
+#         print(p.get_device_info_by_index(i))
 
-    # p.terminate()
+#     p.terminate()
