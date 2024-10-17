@@ -1,16 +1,10 @@
 # AI_Light
-this is the main repository for project AI_Light for module E8004 at Aalto University
+This is AI Light project that was successfully demonstrated in Venice city, during the Venice glass week. 
 
-There are two main scripts: AI.py and light.py. AI.py is run to wait for customer press the button on the skull, then they can speak to the microphone. AI.py will generate a prompt based on the sound captured from the user. 
+In this version of the code, We need to setup the hardware such that everything is connected, and Arduino has the correct running code on it. 
 
-light.py will take the video and image downloaded from triton, and generate a suitable color scheme for arduino to display. It also play back the video. 
+-Use the Arduino software to upload "venice.ino" to the arduino for the firmware to run.
 
-DigitalReadSerial.ino is a firmware that is flashed into arduino. This allow user interaction with button, and control the LED lighting accordingly. 
+-Make sure that "runpod_watchdog.py" is added to the container. It should be under "/workspace/Open-Sora". During the project, we have to manually modified the aspect ratio of the display, since we didn't change the container code. 
 
-For installation, all the necessary can be installed using pip -install. Refer to error message for specific dependencies installation. We would consider a dependency list in future revision of the project 
-
-Known bugs that should be fixed in future revision:
-- sound capturing using microphone is buggy, as there can be multiple input to the PC. The python script should handle exception case better.
-- LED light communication is lossy and often display inaccurate color.
-- Automation with Triton is not completed.
-  
+-The two script to run on local computer is "venice.py" and "video_to_local.py". "venice.py" will also trigger "sound.py" and "voice_recognition.py" They are local library script that was refactored. There will also be some other library needed, but by running the above two scripts, the terminal will show you the missing library. 

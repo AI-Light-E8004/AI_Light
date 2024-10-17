@@ -7,8 +7,8 @@ from scp import SCPClient
 
 # Remote server details
 username = 'root'    
-ip = '91.199.227.82'   #change IP address accordingly 
-port = 10427          #change port accordingly 
+ip = '69.30.85.162'   #change IP address accordingly 
+port = 22198         #change port accordingly 
 key_path = '/home/tung/.ssh/id_ed25519'   # path to private ssh ed25519 key
 
 # Paths to correct folders
@@ -21,7 +21,7 @@ status_file = "light_state.txt"
 status_written = False                                 
 
 # Define loop count for video playback
-loop_count_idle = 1 #20s loop 
+loop_count_idle = 1 #4s loop 
 loop_count_video = 15 #1 minute video
 max_retries = 5
 

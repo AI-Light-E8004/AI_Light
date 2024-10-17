@@ -13,15 +13,15 @@ pathname = "voice.wav"
 textname = "text.txt"
 
 username = 'root'
-ip = '91.199.227.82'   #change IP address accordingly 
-port = 10427          #change port accordingly 
+ip = '69.30.85.162'   #change IP address accordingly 
+port = 22198         #change port accordingly 
 key_path = '/home/tung/.ssh/id_ed25519'  # path to private key 
 
 local_path = 'text.txt'
 remote_path = '/workspace/Open-Sora/assets/texts/t2v.txt'
 backup_folder_path = '/home/tung/Desktop/Master/AI_Light/backup/'
 light_state_path = 'light_state.txt'
-generation_time = 200 # 2 minutes is 120 seconds 
+generation_time = 100 # 2 minutes is 120 seconds 
 
 def ssh_client(username, ip, port, key_path):
     client = paramiko.SSHClient()
